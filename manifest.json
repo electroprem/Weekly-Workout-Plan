@@ -1,0 +1,9 @@
+{
+  "name": "Weekly Workout",
+  "short_name": "Workout",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0a0f1c",
+  "theme_color": "#0a0f1c",
+  "icons": []
+}
