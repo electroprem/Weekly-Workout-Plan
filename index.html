@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weekly Workout</title>
+  <meta name="color-scheme" content="dark">
+  <style>
+    :root{
+      --bg-0:#0a0f1c;
+      --bg-1:#0c1324;
+      --bg-2:#0e162a;
+      --card:#0c1222cc;
+      --border:#1b2740;
+      --muted:#8aa0c4;
+      --text:#e7ecf5;
+      --heading:#f1f5ff;
+      --accent:#7cfead;
+      --accent-2:#7ab8ff;
+      --accent-3:#f0abfc;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --ring: 0 0 0 2px rgba(124,254,173,.25), 0 0 0 6px rgba(124,254,173,.12);
+      --radius:16px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg-0:#f7f9fc; --bg-1:#ffffff; --bg-2:#eef2f8;
+        --card:#ffffffcc; --border:#d9e1ef;
+        --muted:#5b6b84; --text:#0f172a; --heading:#0b1220;
+        --shadow: 0 10px 30px rgba(15,23,42,.08);
+        --ring: 0 0 0 2px rgba(60,140,255,.18), 0 0 0 6px rgba(60,140,255,.08);
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; padding:24px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(124,254,173,.08), transparent 60%),
+        radial-gradient(1200px 600px at 100% 10%, rgba(122,184,255,.08), transparent 60%),
+        linear-gradient(180deg, var(--bg-0), var(--bg-2));
+      backdrop-filter: saturate(110%);
+    }
+    .container{max-width:1000px; margin:0 auto}
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:16px;
+    }
+    .title{ display:flex; align-items:center; gap:12px; }
+    .dot{
+      width:12px; height:12px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, var(--accent), #3bfca1);
+      box-shadow: 0 0 12px rgba(124,254,173,.9), 0 0 32px rgba(124,254,173,.5);
+    }
+    h1{font-size:22px; margin:0; color:var(--heading); letter-spacing:.2px}
+    .sub{font-size:13px; color:var(--muted)}
+    .actions{display:flex; gap:8px; flex-wrap:wrap}
+    button, .chip{
+      appearance:none; border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(14,22,42,.9), rgba(12,18,34,.85));
+      color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer;
+      font-weight:700; font-size:13px; line-height:1; transition:.18s ease-in-out;
+      box-shadow: var(--shadow);
+    }
+    button:hover{transform: translateY(-1px)}
+    .primary{
+      background: linear-gradient(135deg, rgba(124,254,173,.2), rgba(122,184,255,.18));
+      border-color: #2b3b5f;
+    }
+    .danger{
+      background: linear-gradient(135deg, rgba(255,99,99,.22), rgba(255,60,60,.18));
+      border-color:#4d1f29;
+    }
+    .ghost{ background: linear-gradient(180deg, rgba(12,18,34,.65), rgba(12,18,34,.45)); }
+    .chip{border-radius:999px; padding:8px 12px; font-weight:800; color:var(--muted)}
+
+    .tabs{
+      position:sticky; top:0; z-index:5; padding:10px 0 0; margin-bottom:8px;
+      display:flex; flex-wrap:wrap; gap:10px; backdrop-filter: blur(10px) saturate(120%);
+    }
+    .tabs input[type="radio"]{display:none}
+    .tabs label{
+      padding:10px 12px; border:1px solid var(--border); border-radius:12px;
+      background: linear-gradient(180deg, rgba(12,18,34,.6), rgba(12,18,34,.4));
+      cursor:pointer; font-weight:800; font-size:13px; color:var(--muted);
+      box-shadow: inset 0 -1px 0 rgba(255,255,255,.04);
+      transition: .18s ease-in-out;
+    }
+    .tabs label:hover{transform: translateY(-1px)}
+    .tabs input[type="radio"]:checked + label{
+      color:#e6fdf3;
+      border-color:#2a385a;
+      background:
+        linear-gradient(180deg, rgba(16,26,48,.9), rgba(12,18,34,.85)),
+        radial-gradient(200px 60px at 20% 0%, rgba(124,254,173,.18), transparent 70%);
+      box-shadow: inset 0 0 0 1px rgba(124,254,173,.2), 0 6px 16px rgba(0,0,0,.35);
+    }
+    .tabs label:focus-visible, button:focus-visible{
+      outline:none; box-shadow: var(--ring);
+    }
+
+    .panel{
+      display:none; border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(12,18,34,.7), rgba(10,16,28,.7));
+      border-radius: var(--radius); padding:16px; margin-top:10px;
+      box-shadow: var(--shadow);
+    }
+    #day1:checked ~ #content1,
+    #day2:checked ~ #content2,
+    #day3:checked ~ #content3,
+    #day4:checked ~ #content4,
+    #day5:checked ~ #content5,
+    #day6:checked ~ #content6,
+    #day7:checked ~ #content7 { display:block }
+
+    .panel-head{
+      display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px;
+    }
+    .panel h2{font-size:18px; margin:0; color:var(--heading)}
+    .meta{font-size:12px; color:var(--muted)}
+    .controls{display:flex; gap:8px; flex-wrap:wrap}
+
+    .list{ list-style:none; padding:0; margin:0 }
+    .item{
+      display:flex; gap:12px; align-items:flex-start; padding:12px 10px;
+      border-bottom:1px dashed rgba(43,59,95,.5);
+    }
+    .item:last-child{border-bottom:none}
+    .left{display:flex; gap:12px; align-items:flex-start; flex:1}
+    .name{font-weight:900; letter-spacing:.2px}
+    .note{font-size:12px; color:var(--muted)}
+    input[type="checkbox"]{
+      width:20px; height:20px; cursor:pointer; accent-color: #22c55e;
+      filter: drop-shadow(0 0 10px rgba(124,254,173,.35));
+      margin-top:2px;
+    }
+    .tag{
+      font-size:11px; color:#d6e3ff; border:1px solid #2a385a; padding:4px 8px; border-radius:999px;
+      background: linear-gradient(180deg, rgba(13,20,38,.7), rgba(12,18,34,.6));
+    }
+    .set{
+      display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#d6e3ff;
+      border:1px solid #2a385a; padding:6px 10px; border-radius:10px;
+      background: linear-gradient(180deg, rgba(13,20,38,.7), rgba(12,18,34,.6));
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono";
+      font-size:11px; border:1px solid #2a385a; padding:2px 8px; border-radius:8px;
+      background: linear-gradient(180deg, rgba(13,20,38,.9), rgba(13,20,38,.7));
+      color:#a7c7ff;
+    }
+    .footer{
+      margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+      color:var(--muted); font-size:12px;
+    }
+    .spacer{flex:1}
+    .primary:hover, .tabs input[type="radio"]:checked + label:hover{
+      box-shadow: 0 0 0 1px rgba(124,254,173,.25), 0 0 24px rgba(124,254,173,.18);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title">
+        <div class="dot" aria-hidden="true"></div>
+        <div>
+          <h1>Weekly Workout</h1>
+          <div class="sub">Local progress is auto-saved. Switch tabs to navigate days.</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="resetAll" class="danger">Reset All Days</button>
+        <span class="chip">Auto-save · On</span>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <input type="radio" id="day1" name="tab" checked>
+      <label for="day1">Day 1 · Push A</label>
+      <input type="radio" id="day2" name="tab">
+      <label for="day2">Day 2 · Pull A</label>
+      <input type="radio" id="day3" name="tab">
+      <label for="day3">Day 3 · Legs A</label>
+      <input type="radio" id="day4" name="tab">
+      <label for="day4">Day 4 · Active</label>
+      <input type="radio" id="day5" name="tab">
+      <label for="day5">Day 5 · Push B</label>
+      <input type="radio" id="day6" name="tab">
+      <label for="day6">Day 6 · Pull B+Lower</label>
+      <input type="radio" id="day7" name="tab">
+      <label for="day7">Day 7 · Rest</label>
+
+      <!-- Panels for Day 1–Day 7 (unchanged content, tip line removed) -->
+      <section class="panel" id="content1" data-day="1">
+        <div class="panel-head">
+          <h2>Day 1 — Push A</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Chest / Shoulders / Triceps + Core</div>
+        <ul class="list">
+          <li class="item"><div class="left"><input type="checkbox" data-id="bench"><div><div class="name">Barbell Bench Press</div><div class="note">4 × 6–8 · Tempo: explosive concentric / 2–3s eccentric · Rest: 2–3 min</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="incline-db"><div><div class="name">Incline Dumbbell Press</div><div class="note">3 × 8–10 · Rest: 90–120s</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="seated-ohp"><div><div class="name">Seated OHP (barbell or DB)</div><div class="note">3 × 6–8 · Rest: 2 min</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="lat-raise"><div><div class="name">Dumbbell Lateral Raise</div><div class="note">3 × 12–15 (strict) · Rest: 60–90s</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="dips"><div><div class="name">Dips</div><div class="note">3 × 8–12 · Progress: add plate on lap when 12×3 light</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="pushdown"><div><div class="name">Triceps Pushdowns (rope)</div><div class="note">3 × 10–12 · Rest: 60–75s</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="hlr"><div><div class="name">Core: Hanging Leg Raises</div><div class="note">3 × 12–15 (slow, full range)</div></div></div></li>
+        </ul>
+      </section>
+
+      <section class="panel" id="content2" data-day="2">
+        <div class="panel-head">
+          <h2>Day 2 — Pull A</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Back / Biceps + Core</div>
+        <ul class="list">
+          <li class="item"><div class="left"><input type="checkbox" data-id="dl"><div><div class="name">Deadlift (conventional)</div><div class="note">3 × 5 · Tempo: controlled up + 2s down · Rest: 3 min</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="pullups"><div><div class="name">Pull-Ups / Lat Pull-Down</div><div class="note">4 × 6–10 · Add weight if easy</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="bb-row"><div><div class="name">Barbell Row (Pendlay or bent-over)</div><div class="note">3 × 6–8 · Rest: 2–3 min</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="cable-row"><div><div class="name">Seated Cable Row</div><div class="note">3 × 10–12 · 1s pause at peak · Rest: 75–90s</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="face-pull"><div><div class="name">Face Pulls</div><div class="note">3 × 12–15</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="hammer"><div><div class="name">Hammer Curls</div><div class="note">3 × 8–10</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="db-curl"><div><div class="name">Dumbbell Biceps Curl</div><div class="note">3 × 10–12</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="woodchop"><div><div class="name">Core: Cable Woodchoppers</div><div class="note">3 × 12 / side</div></div></div></li>
+        </ul>
+      </section>
+
+      <section class="panel" id="content3" data-day="3">
+        <div class="panel-head">
+          <h2>Day 3 — Legs A</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Quads / Hams / Glutes + Core</div>
+        <ul class="list">
+          <li class="item"><div class="left"><input type="checkbox" data-id="back-squat"><div><div class="name">Back Squat</div><div class="note">4 × 6–8 · Rest: 2.5–3 min</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="rdl"><div><div class="name">Romanian Deadlift</div><div class="note">4 × 8 · Rest: 2 min</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="press-lunge"><div><div class="name">Leg Press OR Walking Lunges</div><div class="note">3 × 10–15 (or 3 × 12/leg) · pick one · Rest: 90–120s</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="leg-curl"><div><div class="name">Leg Curl (machine)</div><div class="note">3 × 12–15</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="calf"><div><div class="name">Standing Calf Raise</div><div class="note">4 × 12–20</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="w-plank"><div><div class="name">Core: Weighted Plank</div><div class="note">3 × 30–45 sec</div></div></div></li>
+        </ul>
+      </section>
+
+      <section class="panel" id="content4" data-day="4">
+        <div class="panel-head">
+          <h2>Day 4 — Active Recovery</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">30 min low-intensity cardio or 20–30 min mobility/yoga · Prioritize sleep 7.5–8 h</div>
+        <ul class="list">
+          <li class="item"><div class="left"><input type="checkbox" data-id="cardio"><div><div class="name">Low-intensity cardio (30 min) OR yoga (20–30 min)</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="mobility"><div><div class="name">Mobility / Stretching Focus</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="sleep"><div><div class="name">Sleep 7.5–8 hrs</div></div></div></li>
+        </ul>
+      </section>
+
+      <section class="panel" id="content5" data-day="5">
+        <div class="panel-head">
+          <h2>Day 5 — Push B (Volume)</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Chest / Shoulders / Triceps + Core</div>
+        <ul class="list">
+          <li class="item"><div class="left"><input type="checkbox" data-id="bench-b"><div><div class="name">Bench Press</div><div class="note">4 × 8–10 (lighter than Monday)</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="incline-b"><div><div class="name">Incline DB Press</div><div class="note">3 × 10–12</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="arnold"><div><div class="name">Arnold Press</div><div class="note">3 × 10–12</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="lat-raise-b"><div><div class="name">Lateral Raise</div><div class="note">3 × 15–20 (short rest)</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="skull"><div><div class="name">Skull Crushers</div><div class="note">3 × 10–12</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="bicycle"><div><div class="name">Core: Bicycle Crunches</div><div class="note">2 × 20 (control, slow)</div></div></div></li>
+        </ul>
+      </section>
+
+      <section class="panel" id="content6" data-day="6">
+        <div class="panel-head">
+          <h2>Day 6 — Pull B + Lower (Volume)</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Back / Biceps + Lower + Core</div>
+        <ul class="list">
+          <li class="item"><div class="left"><input type="checkbox" data-id="front-squat"><div><div class="name">Front Squat</div><div class="note">3 × 6–8</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="pullups-b"><div><div class="name">Pull-Ups / Lat Pulldown</div><div class="note">4 × 8–10</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="sa-row"><div><div class="name">Single-Arm DB Row</div><div class="note">3 × 10 / side</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="rdl-light"><div><div class="name">Romanian Deadlift (lighter)</div><div class="note">3 × 8–10</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="bb-curl"><div><div class="name">Barbell Curl</div><div class="note">3 × 8–10</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="hip-thrust"><div><div class="name">Hip Thrust</div><div class="note">3 × 8–10</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="back-ext"><div><div class="name">Back Extension</div><div class="note">3 × 12–15</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="hkr"><div><div class="name">Core: Hanging Knee Raises</div><div class="note">3 × 15</div></div></div></li>
+        </ul>
+      </section>
+
+      <section class="panel" id="content7" data-day="7">
+        <div class="panel-head">
+          <h2>Day 7 — Rest</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Full rest. Light walking, stretching, hydration. Food on target.</div>
+        <ul class="list">
+          <li class="item"><div class="left"><input type="checkbox" data-id="walk"><div><div class="name">Light walking</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="stretch"><div><div class="name">Stretch & mobility</div></div></div></li>
+          <li class="item"><div class="left"><input type="checkbox" data-id="hydrate"><div><div class="name">Hydration + nutrition on target</div></div></div></li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_PREFIX = 'workout.week.';
+    const dayKey = (day) => STORAGE_PREFIX + 'day' + day;
+    const allKeys = () => Array.from({length:7}, (_,i)=>dayKey(i+1));
+
+    function loadDayState(day){
+      try{ return JSON.parse(localStorage.getItem(dayKey(day)) || '{}'); }
+      catch(e){ return {} }
+    }
+    function saveDayState(day, state){ localStorage.setItem(dayKey(day), JSON.stringify(state)); }
+    function clearDayState(day){ localStorage.removeItem(dayKey(day)); }
+    function resetAll(){
+      allKeys().forEach(k=>localStorage.removeItem(k));
+      document.querySelectorAll('.panel input[type="checkbox"]').forEach(cb => cb.checked = false);
+    }
+
+    function wirePanel(panel){
+      const day = Number(panel.dataset.day);
+      const state = loadDayState(day);
+
+      panel.querySelectorAll('input[type="checkbox"][data-id]').forEach(cb=>{
+        const id = cb.getAttribute('data-id');
+        cb.checked = !!state[id];
+        cb.addEventListener('change', ()=>{
+          const s = loadDayState(day);
+          s[id] = cb.checked;
+          saveDayState(day, s);
+        });
+      });
+
+      const on = (action, handler) => panel.querySelectorAll(`[data-action="${action}"]`).forEach(b=>b.addEventListener('click', handler));
+
+      on('check-all', ()=>{
+        const s = loadDayState(day);
+        panel.querySelectorAll('input[type="checkbox"][data-id]').forEach(cb=>{
+          cb.checked = true; s[cb.getAttribute('data-id')] = true;
+        });
+        saveDayState(day, s);
+      });
+
+      on('uncheck-all', ()=>{
+        const s = loadDayState(day);
+        panel.querySelectorAll('input[type="checkbox"][data-id]').forEach(cb=>{
+          cb.checked = false; s[cb.getAttribute('data-id')] = false;
+        });
+        saveDayState(day, s);
+      });
+
+      on('reset-day', ()=>{
+        clearDayState(day);
+        panel.querySelectorAll('input[type="checkbox"][data-id]').forEach(cb=>cb.checked = false);
+      });
+    }
+
+    document.querySelectorAll('.panel').forEach(wirePanel);
+
+    document.getElementById('resetAll').addEventListener('click', ()=>{
+      if(confirm('Reset all days? This clears all saved checkmarks.')) resetAll();
+    });
+
+    // If you also want to remove the "/" keyboard jump entirely, keep this block removed.
+    // If you want to keep it silently, you can leave it; it no longer shows a tip in UI.
+    // document.addEventListener('keydown', (e)=>{
+    //   if(e.key === '/'){
+    //     e.preventDefault();
+    //     const dow = new Date().getDay();
+    //     const map = {1:'day1',2:'day2',3:'day3',4:'day4',5:'day5',6:'day6',0:'day7'};
+    //     const id = map[dow] || 'day1';
+    //     const tab = document.getElementById(id);
+    //     if(tab){ tab.checked = true; tab.scrollIntoView({behavior:'smooth', block:'start'}); }
+    //   }
+    // });
+  </script>
+</body>
+</html>
+    
