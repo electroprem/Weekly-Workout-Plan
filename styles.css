@@ -44,13 +44,41 @@ body{
 
 .container{max-width:1000px; margin:0 auto; min-height:100vh}
 
-/* Header */
+/* Header - Improved layout */
 header{
-  display:flex; align-items:flex-start; justify-content:space-between; 
-  gap:12px; flex-wrap:wrap; margin-bottom:16px;
+  display:flex; align-items:center; justify-content:space-between; 
+  gap:16px; margin-bottom:16px;
 }
 
-.title{ display:flex; align-items:center; gap:12px; }
+@media (max-width: 640px){
+  header{ 
+    flex-direction: column; 
+    align-items: stretch; 
+    gap: 20px; 
+    text-align: center;
+  }
+  
+  .title{
+    align-self: center;
+  }
+  
+  .actions{
+    align-self: stretch;
+  }
+}
+
+.title{ 
+  display:flex; 
+  align-items:center; 
+  gap:12px; 
+}
+
+@media (max-width: 640px){
+  .title{
+    justify-content: center;
+  }
+}
+
 .dot{
   width:12px; height:12px; border-radius:50%; flex-shrink: 0;
   background: radial-gradient(circle at 30% 30%, var(--accent), #3bfca1);
@@ -62,11 +90,13 @@ h1{font-size:20px; margin:0; color:var(--heading); letter-spacing:.2px}
 .sub{font-size:12px; color:var(--muted); margin-top: 2px;}
 @media (min-width: 640px){ .sub { font-size: 13px; } }
 
-/* Actions - Horizontal scrollable on mobile, wrapped on desktop */
+/* Actions - Better alignment and spacing */
 .actions{
   display:flex; 
   gap:8px; 
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 @media (max-width: 639px){
@@ -74,6 +104,7 @@ h1{font-size:20px; margin:0; color:var(--heading); letter-spacing:.2px}
     overflow-x: auto;
     overflow-y: hidden;
     flex-wrap: nowrap;
+    justify-content: flex-start;
     padding: 4px 0 8px 0;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -82,7 +113,24 @@ h1{font-size:20px; margin:0; color:var(--heading); letter-spacing:.2px}
   .actions::-webkit-scrollbar { display: none; }
 }
 
-/* Buttons */
+@media (max-width: 640px){
+  .actions{ 
+    justify-content: center;
+    order: 2;
+  }
+  .title{
+    order: 1;
+  }
+}
+
+@media (min-width: 641px){
+  .actions{
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+}
+
+/* Button sizing for consistent alignment */
 button, .chip, label.buttonish{
   appearance:none; border:1px solid var(--border);
   background: linear-gradient(180deg, rgba(14,22,42,.9), rgba(12,18,34,.85));
@@ -90,6 +138,7 @@ button, .chip, label.buttonish{
   font-weight:700; font-size:13px; line-height:1; transition:.18s ease-in-out;
   box-shadow: var(--shadow); min-height: 44px;
   white-space: nowrap;
+  text-align: center;
 }
 
 @media (max-width: 639px){
@@ -98,6 +147,19 @@ button, .chip, label.buttonish{
     min-width: 90px;
     flex-shrink: 0;
   }
+}
+
+/* Specific button order and styling */
+#startWeek { order: 1; }
+#exportJson { order: 2; }
+label[for="importJson"] { order: 3; }
+#resetAll { order: 4; }
+
+@media (max-width: 639px){
+  #startWeek { order: 1; min-width: 110px; }
+  #exportJson { order: 2; min-width: 80px; }
+  label[for="importJson"] { order: 3; min-width: 80px; }
+  #resetAll { order: 4; min-width: 100px; }
 }
 
 button:hover, label.buttonish:hover{transform: translateY(-1px)}
