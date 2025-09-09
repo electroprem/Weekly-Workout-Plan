@@ -179,56 +179,47 @@ button:active, label.buttonish:active{transform: translateY(0)}
 .chip{border-radius:999px; padding:8px 12px; font-weight:800; color:var(--muted)}
 label.buttonish{display:inline-block}
 
-/* Tabs - Horizontally scrollable within viewport */
+/* Tabs - Fixed sizing to prevent squashing */
 .tabs{
   position: sticky; 
   top: 0; 
   z-index: 5; 
-  margin: 0 -16px 16px -16px; /* Extend to screen edges */
+  margin: 0 -16px 16px -16px;
   padding: 12px 16px;
   display: flex; 
-  flex-wrap: nowrap; /* Always single row */
-  gap: 8px; 
+  flex-wrap: nowrap !important; /* Force no wrapping */
+  gap: 12px; /* Increased gap for better spacing */
   backdrop-filter: blur(10px) saturate(120%);
   background: linear-gradient(180deg, rgba(10,15,28,.9), rgba(10,15,28,.7));
-  border-radius: 0; /* Remove border radius for full width */
-  overflow-x: auto; /* Enable horizontal scroll */
+  border-radius: 0;
+  overflow-x: auto; 
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  /* Prevent horizontal page scroll */
   max-width: 100vw;
   box-sizing: border-box;
   position: relative;
 }
 .tabs::-webkit-scrollbar { display: none; }
 
-/* Desktop styling */
 @media (min-width: 640px){
   .tabs { 
-    margin: 0 -24px 16px -24px; /* Extend to screen edges on desktop */
+    margin: 0 -24px 16px -24px;
     padding: 12px 24px;
-    gap: 10px;
-    background: linear-gradient(180deg, rgba(10,15,28,.8), rgba(10,15,28,.6));
+    gap: 16px; /* More spacing on desktop */
   }
 }
 
-/* Ensure tabs container doesn't overflow viewport */
+/* Scroll fade indicator */
 @media (max-width: 639px) {
-  .tabs {
-    /* Add padding for scroll indicator */
-    padding-right: 40px;
-  }
-  
-  /* Scroll fade indicator */
   .tabs::after {
     content: '';
     position: absolute;
     right: 0;
     top: 0;
     bottom: 0;
-    width: 30px;
+    width: 40px;
     background: linear-gradient(90deg, transparent, rgba(10,15,28,0.9));
     pointer-events: none;
   }
@@ -236,66 +227,74 @@ label.buttonish{display:inline-block}
 
 .tabs input[type="radio"]{display:none}
 
+/* Fixed tab button sizing */
 .tabs label{
-  padding: 8px 12px; 
+  padding: 10px 16px; /* Better padding */
   border: 1px solid var(--border); 
-  border-radius: 10px;
+  border-radius: 12px; /* Rounded corners */
   background: linear-gradient(180deg, rgba(12,18,34,.6), rgba(12,18,34,.4));
   cursor: pointer; 
   font-weight: 700; 
-  font-size: 11px; 
+  font-size: 12px; /* Readable font size */
   color: var(--muted);
   box-shadow: inset 0 -1px 0 rgba(255,255,255,.04);
   transition: .18s ease-in-out;
   display: flex; 
   align-items: center; 
   justify-content: center;
-  min-height: 44px; 
+  min-height: 48px; /* Better touch target */
   text-align: center;
-  min-width: 85px; /* Compact size */
-  flex-shrink: 0; /* Prevent shrinking */
-  white-space: nowrap; /* Keep text on one line */
+  min-width: 120px !important; /* Fixed minimum width */
+  max-width: 150px; /* Prevent getting too wide */
+  flex-shrink: 0 !important; /* Prevent shrinking */
+  white-space: nowrap !important; /* No text wrapping */
   overflow: hidden; 
   text-overflow: ellipsis;
 }
 
-@media (min-width: 480px){
+/* Responsive sizing */
+@media (min-width: 480px) and (max-width: 639px){
   .tabs label { 
-    font-size: 12px; 
-    padding: 9px 14px;
-    min-width: 100px; 
+    min-width: 110px !important;
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 479px){
+  .tabs label {
+    min-width: 100px !important;
+    font-size: 10px;
+    padding: 8px 10px;
   }
 }
 
 @media (min-width: 640px){
   .tabs label { 
-    padding: 10px 16px; 
-    border-radius: 12px; 
-    font-size: 13px; 
-    min-width: 120px; 
-  }
-}
-
-@media (max-width: 360px){
-  .tabs label {
-    font-size: 10px;
-    padding: 6px 8px;
-    min-width: 80px; 
+    min-width: 140px !important;
+    font-size: 13px;
+    padding: 12px 20px;
   }
 }
 
 .tabs .badge{
-  margin-left: 6px; padding:2px 6px; border-radius:999px; font-size:9px; font-weight:800;
-  color:#0a121f; background:linear-gradient(180deg,#7cfead,#43e89c);
+  margin-left: 8px; 
+  padding: 3px 8px; 
+  border-radius: 999px; 
+  font-size: 10px; 
+  font-weight: 800;
+  color: #0a121f; 
+  background: linear-gradient(180deg, #7cfead, #43e89c);
 }
 
 @media (min-width: 640px){
   .tabs .badge { 
-    margin-left: 8px; 
-    padding: 2px 8px; 
+    margin-left: 10px; 
+    padding: 4px 10px; 
     font-size: 11px; 
   }
 }
+
 
 .tabs label:hover{transform: translateY(-1px)}
 .tabs label:active{transform: translateY(0)}
