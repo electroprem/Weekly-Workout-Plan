@@ -1,431 +1,555 @@
-:root{
-  --bg-0:#0a0f1c;
-  --bg-1:#0c1324;
-  --bg-2:#0e162a;
-  --card:#0c1222cc;
-  --border:#1b2740;
-  --muted:#8aa0c4;
-  --text:#e7ecf5;
-  --heading:#f1f5ff;
-  --accent:#7cfead;
-  --accent-2:#7ab8ff;
-  --accent-3:#f0abfc;
-  --shadow: 0 10px 30px rgba(0,0,0,.45);
-  --ring: 0 0 0 2px rgba(124,254,173,.25), 0 0 0 6px rgba(124,254,173,.12);
-  --radius:16px;
-}
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24' fill='none' stroke='%237cfead' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12h12'/%3E%3Cpath d='M6 8h12'/%3E%3Cpath d='M6 16h12'/%3E%3C/svg%3E">
+  <meta name="theme-color" content="#0a0f1c">
+  <meta name="color-scheme" content="dark">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+  <title>Weekly Workout</title>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="title">
+        <div class="dot" aria-hidden="true"></div>
+        <div>
+          <h1>Weekly Workout</h1>
+          <div class="sub" id="weekMeta"></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="startWeek" class="primary">Start New Week</button>
+        <button id="exportJson" class="ghost">Export</button>
+        <label for="importJson" class="buttonish ghost">Import</label>
+        <input id="importJson" type="file" accept="application/json" style="display:none">
+        <button id="resetAll" class="danger">Reset All Days</button>
+      </div>
+    </header>
 
-@media (prefers-color-scheme: light){
-  :root{
-    --bg-0:#f7f9fc; --bg-1:#ffffff; --bg-2:#eef2f8;
-    --card:#ffffffcc; --border:#d9e1ef;
-    --muted:#5b6b84; --text:#0f172a; --heading:#0b1220;
-    --shadow: 0 10px 30px rgba(15,23,42,.08);
-    --ring: 0 0 0 2px rgba(60,140,255,.18), 0 0 0 6px rgba(60,140,255,.08);
-  }
-}
+    <div class="tabs" role="tablist" aria-label="Workout days">
+      <input type="radio" id="day1" name="tab" checked>
+      <label id="label-day1" for="day1" role="tab" aria-controls="content1">Day 1 · Push A <span class="badge" data-badge="1">0%</span></label>
+      <input type="radio" id="day2" name="tab">
+      <label id="label-day2" for="day2" role="tab" aria-controls="content2">Day 2 · Pull A <span class="badge" data-badge="2">0%</span></label>
+      <input type="radio" id="day3" name="tab">
+      <label id="label-day3" for="day3" role="tab" aria-controls="content3">Day 3 · Legs A <span class="badge" data-badge="3">0%</span></label>
+      <input type="radio" id="day4" name="tab">
+      <label id="label-day4" for="day4" role="tab" aria-controls="content4">Day 4 · Active <span class="badge" data-badge="4">0%</span></label>
+      <input type="radio" id="day5" name="tab">
+      <label id="label-day5" for="day5" role="tab" aria-controls="content5">Day 5 · Push B <span class="badge" data-badge="5">0%</span></label>
+      <input type="radio" id="day6" name="tab">
+      <label id="label-day6" for="day6" role="tab" aria-controls="content6">Day 6 · Pull B+Lower <span class="badge" data-badge="6">0%</span></label>
+      <input type="radio" id="day7" name="tab">
+      <label id="label-day7" for="day7" role="tab" aria-controls="content7">Day 7 · Rest <span class="badge" data-badge="7">0%</span></label>
 
-*{box-sizing:border-box}
-html,body{height:100%}
+      <!-- Day 1 -->
+      <section class="panel" id="content1" role="tabpanel" aria-labelledby="label-day1" data-day="1">
+        <div class="panel-head">
+          <h2>Day 1 — Push A</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Chest / Shoulders / Triceps + Core</div>
+        <ul class="list">
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="bench">
+            </div>
+            <div class="content">
+              <div class="name">Barbell Bench Press</div>
+              <div class="note">4 × 6–8 · Tempo: explosive concentric / 2–3s eccentric · Rest: 2–3 min</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="incline-db">
+            </div>
+            <div class="content">
+              <div class="name">Incline Dumbbell Press</div>
+              <div class="note">3 × 8–10 · Rest: 90–120s</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="seated-ohp">
+            </div>
+            <div class="content">
+              <div class="name">Seated OHP (barbell or DB)</div>
+              <div class="note">3 × 6–8 · Rest: 2 min</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="lat-raise">
+            </div>
+            <div class="content">
+              <div class="name">Dumbbell Lateral Raise</div>
+              <div class="note">3 × 12–15 (strict) · Rest: 60–90s</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="dips">
+            </div>
+            <div class="content">
+              <div class="name">Dips</div>
+              <div class="note">3 × 8–12 · Progress: add plate when 12×3 feels light</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="pushdown">
+            </div>
+            <div class="content">
+              <div class="name">Triceps Pushdowns (rope)</div>
+              <div class="note">3 × 10–12 · Rest: 60–75s</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="hlr">
+            </div>
+            <div class="content">
+              <div class="name">Core: Hanging Leg Raises</div>
+              <div class="note">3 × 12–15 (slow, full range)</div>
+            </div>
+          </li>
+        </ul>
+        <div class="mobile-bar">
+          <button class="primary" data-action="check-all">Check All</button>
+          <button class="ghost" data-action="uncheck-all">Uncheck</button>
+          <button class="danger" data-action="reset-day">Reset</button>
+        </div>
+      </section>
 
-body{
-  margin:0; padding:16px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans";
-  color:var(--text);
-  background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(124,254,173,.08), transparent 60%),
-    radial-gradient(1200px 600px at 100% 10%, rgba(122,184,255,.08), transparent 60%),
-    linear-gradient(180deg, var(--bg-0), var(--bg-2));
-  backdrop-filter: saturate(110%);
-  line-height: 1.5;
-}
+      <!-- Day 2 -->
+      <section class="panel" id="content2" role="tabpanel" aria-labelledby="label-day2" data-day="2">
+        <div class="panel-head">
+          <h2>Day 2 — Pull A</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Back / Biceps + Core</div>
+        <ul class="list">
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="dl">
+            </div>
+            <div class="content">
+              <div class="name">Deadlift (conventional)</div>
+              <div class="note">3 × 5 · Controlled up + 2s down · Rest: 3 min</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="pullups">
+            </div>
+            <div class="content">
+              <div class="name">Pull-Ups / Lat Pull-Down</div>
+              <div class="note">4 × 6–10 · Add weight if easy</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="bb-row">
+            </div>
+            <div class="content">
+              <div class="name">Barbell Row (Pendlay or bent-over)</div>
+              <div class="note">3 × 6–8 · Rest: 2–3 min</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="cable-row">
+            </div>
+            <div class="content">
+              <div class="name">Seated Cable Row</div>
+              <div class="note">3 × 10–12 · 1s pause at peak · Rest: 75–90s</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="face-pull">
+            </div>
+            <div class="content">
+              <div class="name">Face Pulls</div>
+              <div class="note">3 × 12–15</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="hammer">
+            </div>
+            <div class="content">
+              <div class="name">Hammer Curls</div>
+              <div class="note">3 × 8–10</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="db-curl">
+            </div>
+            <div class="content">
+              <div class="name">Dumbbell Biceps Curl</div>
+              <div class="note">3 × 10–12</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="woodchop">
+            </div>
+            <div class="content">
+              <div class="name">Core: Cable Woodchoppers</div>
+              <div class="note">3 × 12 / side</div>
+            </div>
+          </li>
+        </ul>
+        <div class="mobile-bar">
+          <button class="primary" data-action="check-all">Check All</button>
+          <button class="ghost" data-action="uncheck-all">Uncheck</button>
+          <button class="danger" data-action="reset-day">Reset</button>
+        </div>
+      </section>
 
-@media (min-width: 640px) { body { padding: 24px; } }
+      <!-- Day 3 -->
+      <section class="panel" id="content3" role="tabpanel" aria-labelledby="label-day3" data-day="3">
+        <div class="panel-head">
+          <h2>Day 3 — Legs A</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Quads / Hams / Glutes + Core</div>
+        <ul class="list">
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="back-squat">
+            </div>
+            <div class="content">
+              <div class="name">Back Squat</div>
+              <div class="note">4 × 6–8 · Rest: 2.5–3 min</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="rdl">
+            </div>
+            <div class="content">
+              <div class="name">Romanian Deadlift</div>
+              <div class="note">4 × 8 · Rest: 2 min</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="press-lunge">
+            </div>
+            <div class="content">
+              <div class="name">Leg Press OR Walking Lunges</div>
+              <div class="note">3 × 10–15 (or 3 × 12/leg) · pick one · Rest: 90–120s</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="leg-curl">
+            </div>
+            <div class="content">
+              <div class="name">Leg Curl (machine)</div>
+              <div class="note">3 × 12–15</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="calf">
+            </div>
+            <div class="content">
+              <div class="name">Standing Calf Raise</div>
+              <div class="note">4 × 12–20</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="w-plank">
+            </div>
+            <div class="content">
+              <div class="name">Core: Weighted Plank</div>
+              <div class="note">3 × 30–45 sec</div>
+            </div>
+          </li>
+        </ul>
+        <div class="mobile-bar">
+          <button class="primary" data-action="check-all">Check All</button>
+          <button class="ghost" data-action="uncheck-all">Uncheck</button>
+          <button class="danger" data-action="reset-day">Reset</button>
+        </div>
+      </section>
 
-.container{max-width:1000px; margin:0 auto; min-height:100vh}
+      <!-- Day 4 -->
+      <section class="panel" id="content4" role="tabpanel" aria-labelledby="label-day4" data-day="4">
+        <div class="panel-head">
+          <h2>Day 4 — Active Recovery</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">30 min low-intensity cardio or 20–30 min mobility/yoga · Prioritize sleep 7.5–8 h</div>
+        <ul class="list">
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="cardio">
+            </div>
+            <div class="content">
+              <div class="name">Low-intensity cardio (30 min) OR yoga (20–30 min)</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="mobility">
+            </div>
+            <div class="content">
+              <div class="name">Mobility / Stretching Focus</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="sleep">
+            </div>
+            <div class="content">
+              <div class="name">Sleep 7.5–8 hrs</div>
+            </div>
+          </li>
+        </ul>
+        <div class="mobile-bar">
+          <button class="primary" data-action="check-all">Check All</button>
+          <button class="ghost" data-action="uncheck-all">Uncheck</button>
+          <button class="danger" data-action="reset-day">Reset</button>
+        </div>
+      </section>
 
-/* Header - Improved layout */
-header{
-  display:flex; align-items:center; justify-content:space-between; 
-  gap:16px; margin-bottom:16px;
-}
+      <!-- Day 5 -->
+      <section class="panel" id="content5" role="tabpanel" aria-labelledby="label-day5" data-day="5">
+        <div class="panel-head">
+          <h2>Day 5 — Push B (Volume)</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Chest / Shoulders / Triceps + Core</div>
+        <ul class="list">
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="bench-b">
+            </div>
+            <div class="content">
+              <div class="name">Bench Press</div>
+              <div class="note">4 × 8–10 (lighter than Monday)</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="incline-b">
+            </div>
+            <div class="content">
+              <div class="name">Incline DB Press</div>
+              <div class="note">3 × 10–12</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="arnold">
+            </div>
+            <div class="content">
+              <div class="name">Arnold Press</div>
+              <div class="note">3 × 10–12</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="lat-raise-b">
+            </div>
+            <div class="content">
+              <div class="name">Lateral Raise</div>
+              <div class="note">3 × 15–20 (short rest)</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="skull">
+            </div>
+            <div class="content">
+              <div class="name">Skull Crushers</div>
+              <div class="note">3 × 10–12</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="bicycle">
+            </div>
+            <div class="content">
+              <div class="name">Core: Bicycle Crunches</div>
+              <div class="note">2 × 20 (control, slow)</div>
+            </div>
+          </li>
+        </ul>
+        <div class="mobile-bar">
+          <button class="primary" data-action="check-all">Check All</button>
+          <button class="ghost" data-action="uncheck-all">Uncheck</button>
+          <button class="danger" data-action="reset-day">Reset</button>
+        </div>
+      </section>
 
-@media (max-width: 640px){
-  header{ 
-    flex-direction: column; 
-    align-items: stretch; 
-    gap: 20px; 
-    text-align: center;
-  }
-  
-  .title{
-    align-self: center;
-  }
-  
-  .actions{
-    align-self: stretch;
-  }
-}
+      <!-- Day 6 -->
+      <section class="panel" id="content6" role="tabpanel" aria-labelledby="label-day6" data-day="6">
+        <div class="panel-head">
+          <h2>Day 6 — Pull B + Lower (Volume)</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Back / Biceps + Lower + Core</div>
+        <ul class="list">
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="front-squat">
+            </div>
+            <div class="content">
+              <div class="name">Front Squat</div>
+              <div class="note">3 × 6–8</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="pullups-b">
+            </div>
+            <div class="content">
+              <div class="name">Pull-Ups / Lat Pulldown</div>
+              <div class="note">4 × 8–10</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="sa-row">
+            </div>
+            <div class="content">
+              <div class="name">Single-Arm DB Row</div>
+              <div class="note">3 × 10 / side</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="rdl-light">
+            </div>
+            <div class="content">
+              <div class="name">Romanian Deadlift (lighter)</div>
+              <div class="note">3 × 8–10</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="bb-curl">
+            </div>
+            <div class="content">
+              <div class="name">Barbell Curl</div>
+              <div class="note">3 × 8–10</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="hip-thrust">
+            </div>
+            <div class="content">
+              <div class="name">Hip Thrust</div>
+              <div class="note">3 × 8–10</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="back-ext">
+            </div>
+            <div class="content">
+              <div class="name">Back Extension</div>
+              <div class="note">3 × 12–15</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="hkr">
+            </div>
+            <div class="content">
+              <div class="name">Core: Hanging Knee Raises</div>
+              <div class="note">3 × 15</div>
+            </div>
+          </li>
+        </ul>
+        <div class="mobile-bar">
+          <button class="primary" data-action="check-all">Check All</button>
+          <button class="ghost" data-action="uncheck-all">Uncheck</button>
+          <button class="danger" data-action="reset-day">Reset</button>
+        </div>
+      </section>
 
-.title{ 
-  display:flex; 
-  align-items:center; 
-  gap:12px; 
-}
+      <!-- Day 7 -->
+      <section class="panel" id="content7" role="tabpanel" aria-labelledby="label-day7" data-day="7">
+        <div class="panel-head">
+          <h2>Day 7 — Rest</h2>
+          <div class="controls">
+            <button class="primary" data-action="check-all">Check All</button>
+            <button class="ghost" data-action="uncheck-all">Uncheck All</button>
+            <button class="danger" data-action="reset-day">Reset Day</button>
+          </div>
+        </div>
+        <div class="meta">Full rest. Light walking, stretching, hydration. Food on target.</div>
+        <ul class="list">
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="walk">
+            </div>
+            <div class="content">
+              <div class="name">Light walking</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="stretch">
+            </div>
+            <div class="content">
+              <div class="name">Stretch & mobility</div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="checkbox-container">
+              <input type="checkbox" data-id="hydrate">
+            </div>
+            <div class="content">
+              <div class="name">Hydration + nutrition on target</div>
+            </div>
+          </li>
+        </ul>
+        <div class="mobile-bar">
+          <button class="primary" data-action="check-all">Check All</button>
+          <button class="ghost" data-action="uncheck-all">Uncheck</button>
+          <button class="danger" data-action="reset-day">Reset</button>
+        </div>
+      </section>
+    </div>
+  </div>
 
-@media (max-width: 640px){
-  .title{
-    justify-content: center;
-  }
-}
-
-.dot{
-  width:12px; height:12px; border-radius:50%; flex-shrink: 0;
-  background: radial-gradient(circle at 30% 30%, var(--accent), #3bfca1);
-  box-shadow: 0 0 12px rgba(124,254,173,.9), 0 0 32px rgba(124,254,173,.5);
-}
-h1{font-size:20px; margin:0; color:var(--heading); letter-spacing:.2px}
-@media (min-width: 640px){ h1 { font-size: 22px; } }
-
-.sub{font-size:12px; color:var(--muted); margin-top: 2px;}
-@media (min-width: 640px){ .sub { font-size: 13px; } }
-
-/* Actions - Better alignment and spacing */
-.actions{
-  display:flex; 
-  gap:8px; 
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-@media (max-width: 639px){
-  .actions{
-    overflow-x: auto;
-    overflow-y: hidden;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    padding: 4px 0 8px 0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .actions::-webkit-scrollbar { display: none; }
-}
-
-@media (max-width: 640px){
-  .actions{ 
-    justify-content: center;
-    order: 2;
-  }
-  .title{
-    order: 1;
-  }
-}
-
-@media (min-width: 641px){
-  .actions{
-    justify-content: flex-end;
-    flex-wrap: wrap;
-  }
-}
-
-/* Button sizing for consistent alignment */
-button, .chip, label.buttonish{
-  appearance:none; border:1px solid var(--border);
-  background: linear-gradient(180deg, rgba(14,22,42,.9), rgba(12,18,34,.85));
-  color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer;
-  font-weight:700; font-size:13px; line-height:1; transition:.18s ease-in-out;
-  box-shadow: var(--shadow); min-height: 44px;
-  white-space: nowrap;
-  text-align: center;
-}
-
-@media (max-width: 639px){
-  button, .chip, label.buttonish{
-    padding:8px 12px; font-size:12px;
-    min-width: 90px;
-    flex-shrink: 0;
-  }
-}
-
-/* Specific button order and styling */
-#startWeek { order: 1; }
-#exportJson { order: 2; }
-label[for="importJson"] { order: 3; }
-#resetAll { order: 4; }
-
-@media (max-width: 639px){
-  #startWeek { order: 1; min-width: 110px; }
-  #exportJson { order: 2; min-width: 80px; }
-  label[for="importJson"] { order: 3; min-width: 80px; }
-  #resetAll { order: 4; min-width: 100px; }
-}
-
-button:hover, label.buttonish:hover{transform: translateY(-1px)}
-button:active, label.buttonish:active{transform: translateY(0)}
-
-.primary{
-  background: linear-gradient(135deg, rgba(124,254,173,.2), rgba(122,184,255,.18));
-  border-color: #2b3b5f;
-}
-.danger{
-  background: linear-gradient(135deg, rgba(255,99,99,.22), rgba(255,60,60,.18));
-  border-color:#4d1f29;
-}
-.ghost{ background: linear-gradient(180deg, rgba(12,18,34,.65), rgba(12,18,34,.45)); }
-.chip{border-radius:999px; padding:8px 12px; font-weight:800; color:var(--muted)}
-label.buttonish{display:inline-block}
-
-/* Tabs - Fixed layout with proper wrapping */
-.tabs{
-  position:sticky; top:0; z-index:5; padding:10px 0; margin-bottom:16px;
-  display:flex; 
-  flex-wrap: wrap;
-  gap: 8px; 
-  backdrop-filter: blur(10px) saturate(120%);
-  background: linear-gradient(180deg, rgba(10,15,28,.8), rgba(10,15,28,.6));
-  border-radius: 12px; 
-  padding: 12px;
-}
-
-@media (min-width: 640px){
-  .tabs { 
-    gap: 10px;
-    background: none; 
-    border-radius: 0;
-    padding: 10px 0;
-  }
-}
-
-.tabs input[type="radio"]{display:none}
-
-.tabs label{
-  padding:8px 12px; border:1px solid var(--border); border-radius:10px;
-  background: linear-gradient(180deg, rgba(12,18,34,.6), rgba(12,18,34,.4));
-  cursor:pointer; font-weight:700; font-size:11px; color:var(--muted);
-  box-shadow: inset 0 -1px 0 rgba(255,255,255,.04);
-  transition: .18s ease-in-out;
-  display:flex; align-items:center; justify-content: center;
-  min-height: 44px; text-align: center;
-  flex: 1 1 auto;
-  min-width: 80px;
-}
-
-@media (min-width: 480px){
-  .tabs label { 
-    font-size: 12px; 
-    padding: 9px 14px;
-  }
-}
-
-@media (min-width: 640px){
-  .tabs label { 
-    padding: 10px 16px; 
-    border-radius: 12px; 
-    font-size: 13px; 
-    flex: none;
-    min-width: 120px;
-  }
-}
-
-.tabs .badge{
-  margin-left: 6px; padding:2px 6px; border-radius:999px; font-size:9px; font-weight:800;
-  color:#0a121f; background:linear-gradient(180deg,#7cfead,#43e89c);
-}
-
-@media (min-width: 640px){
-  .tabs .badge { 
-    margin-left: 8px; 
-    padding: 2px 8px; 
-    font-size: 11px; 
-  }
-}
-
-.tabs label:hover{transform: translateY(-1px)}
-.tabs label:active{transform: translateY(0)}
-
-.tabs input[type="radio"]:checked + label{
-  color:#e6fdf3;
-  border-color:#2a385a;
-  background:
-    linear-gradient(180deg, rgba(16,26,48,.9), rgba(12,18,34,.85)),
-    radial-gradient(200px 60px at 20% 0%, rgba(124,254,173,.18), transparent 70%);
-  box-shadow: inset 0 0 0 1px rgba(124,254,173,.2), 0 6px 16px rgba(0,0,0,.35);
-}
-
-.tabs label:focus-visible, button:focus-visible, label.buttonish:focus-visible{
-  outline:none; box-shadow: var(--ring);
-}
-
-/* Panels */
-.panel{
-  display:none; border:1px solid var(--border);
-  background: linear-gradient(180deg, rgba(12,18,34,.7), rgba(10,16,28,.7));
-  border-radius: var(--radius); padding:12px; margin-top:8px;
-  box-shadow: var(--shadow);
-}
-@media (min-width: 640px){ .panel { padding: 16px; margin-top: 10px; } }
-
-#day1:checked ~ #content1,
-#day2:checked ~ #content2,
-#day3:checked ~ #content3,
-#day4:checked ~ #content4,
-#day5:checked ~ #content5,
-#day6:checked ~ #content6,
-#day7:checked ~ #content7 { display:block }
-
-.panel-head{
-  display:flex; justify-content:space-between; align-items:flex-start; gap:8px; 
-  flex-wrap:wrap; margin-bottom:8px;
-}
-
-.panel h2{font-size:16px; margin:0; color:var(--heading)}
-@media (min-width: 640px){ .panel h2 { font-size: 18px; } }
-
-.meta{font-size:11px; color:var(--muted); margin-top: 4px;}
-@media (min-width: 640px){ .meta { font-size: 12px; } }
-
-/* Controls - Same as actions */
-.controls{
-  display:flex; 
-  gap:8px; 
-  flex-wrap: wrap;
-}
-
-@media (max-width: 639px){
-  .controls{
-    overflow-x: auto;
-    overflow-y: hidden;
-    flex-wrap: nowrap;
-    padding: 4px 0 8px 0;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .controls::-webkit-scrollbar { display: none; }
-}
-
-/* Checklist */
-.list{ 
-  list-style:none; 
-  padding:0; 
-  margin:0;
-  display: flex;
-  flex-direction: column;
-}
-
-.item{
-  display:grid;
-  grid-template-columns: 20px 1fr;
-  gap: 12px;
-  align-items: flex-start;
-  padding: 12px 8px;
-  border-bottom:1px dashed rgba(43,59,95,.5);
-}
-@media (min-width: 640px){ 
-  .item { 
-    grid-template-columns: 22px 1fr;
-    gap: 14px; 
-    padding: 12px 10px; 
-  } 
-}
-.item:last-child{border-bottom:none}
-
-.checkbox-container{
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  width: 20px;
-  margin-top: 2px;
-}
-@media (min-width: 640px){ 
-  .checkbox-container { width: 22px; } 
-}
-
-.content{
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.name{
-  font-weight:900; 
-  letter-spacing:.2px; 
-  font-size: 14px;
-  line-height: 1.3;
-  margin: 0;
-}
-@media (min-width: 640px){ .name { font-size: 16px; } }
-
-.note{
-  font-size:11px; 
-  color:var(--muted); 
-  line-height: 1.4;
-  margin: 0;
-}
-@media (min-width: 640px){ .note { font-size: 12px; } }
-
-input[type="checkbox"]{
-  width:18px; height:18px; cursor:pointer; accent-color: #22c55e;
-  filter: drop-shadow(0 0 10px rgba(124,254,173,.35));
-  margin: 0;
-  flex-shrink: 0;
-}
-@media (min-width: 640px){ input[type="checkbox"] { width: 20px; height: 20px; } }
-
-/* Mobile bar */
-.mobile-bar{
-  position:sticky; bottom:0; left:-12px; right:-12px; padding:12px; 
-  display:flex; gap:8px; 
-  background:linear-gradient(180deg, rgba(12,18,34,.9), rgba(12,18,34,.95));
-  border-top:1px solid var(--border); margin-top:12px;
-  backdrop-filter: blur(10px);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.mobile-bar::-webkit-scrollbar { display: none; }
-@media (min-width: 800px){ .mobile-bar{ display:none } }
-
-.mobile-bar button {
-  min-width: 80px;
-  flex-shrink: 0;
-}
-
-.footer{
-  margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;
-  color:var(--muted); font-size:11px; text-align: center; justify-content: center;
-}
-@media (min-width: 640px){ .footer { font-size: 12px; text-align: left; justify-content: flex-start; } }
-
-.spacer{flex:1}
-.primary:hover, .tabs input[type="radio"]:checked + label:hover{
-  box-shadow: 0 0 0 1px rgba(124,254,173,.25), 0 0 24px rgba(124,254,173,.18);
-}
-
-.panel {
-  animation: fadeIn 0.3s ease-in-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Better touch targets for mobile */
-@media (max-width: 640px){
-  .item {
-    padding: 14px 8px;
-  }
-  
-  input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .checkbox-container {
-    width: 22px;
-  }
-}
+  <script src="script.js"></script>
+</body>
+</html>
